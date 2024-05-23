@@ -22,12 +22,12 @@ public class TSPAntColony {
     private static double[][] pheromones = new double[NODES][NODES];
 
     public static void main(String[] args) {
-        double[] QValues = {0.1, 1.0, 10.0};
-        double[] ALPHAValues = {0.1, 1.0, 10.0};
+        double[] QValues = {1, 10};
+        double[] ALPHAValues = {1, 10};
         initializeDistances();
         initializePheromones();
 
-        //mehrere ausführungen mit untschiedlichen Q und Alpha werten
+        //mehrere ausführungen mit unterschiedlichen Q und Alpha werten
         for (double Qs : QValues) {
             for (double ALPHAs : ALPHAValues) {
                 Q = Qs;
@@ -43,17 +43,19 @@ public class TSPAntColony {
 
                 List<Integer> bestTour = findBestTour(tours);
                 int bestTourCost = calculateTourCost(bestTour);
-
-                //visualizeBestTourInGraph(bestTour);
-                visualizeBestTour(bestTour);
-                // printDistancesAndPheromones();
                 System.out.println("Beste Tour: " + bestTour);
                 System.out.println("Gesamtkosten: " + bestTourCost + "\n");
+
+                //visualizeBestTourInGraph(bestTour);
+                //visualizeBestTour(bestTour);
+                // printDistancesAndPheromones();
             }}
 
         //setzen der werte für einzelne ausführung
         Q = 1.0;
-        ALPHA = 1.0;
+        ALPHA = 5.0;
+
+
 
         List<List<Integer>> tours = new ArrayList<>();
         for (int iteration = 0; iteration < 100; iteration++) {
@@ -68,8 +70,9 @@ public class TSPAntColony {
         //visualizeBestTourInGraph(bestTour);
         visualizeBestTour(bestTour);
         // printDistancesAndPheromones();
+        System.out.println("Testing for Q = " + Q + ", ALPHA = " + ALPHA );
         System.out.println("Beste Tour: " + bestTour);
-        System.out.println("Gesamtkosten: " + bestTourCost + "\n");
+        System.out.println("Gesamtkosten: " + bestTourCost );
 
         visualizeGraph();
     }
@@ -87,10 +90,9 @@ public class TSPAntColony {
                 }
             }
         }
-        // System.out.println("distances: " + distances);
     }
 
-    //anfängliche pheromonwerte initialisieren
+    //anfängliche Pheromon werte initialisieren
     static void initializePheromones() {
         for (int i = 0; i < NODES; i++) {
             Arrays.fill(pheromones[i], INITIAL_PHEROMONE);
@@ -101,21 +103,24 @@ public class TSPAntColony {
     static List<List<Integer>> simulateAnts() {
         List<List<Integer>> tours = new ArrayList<>();
 
+        // Für jede Ameise (jede Ameise startet von einem anderen Knoten)
         for (int ant = 0; ant < NODES; ant++) {
             List<Integer> tour = new ArrayList<>();
-            tour.add(ant);
+            tour.add(ant); // Die Ameise beginnt ihre Tour an Knoten 'ant'
 
+            // Solange die Tour noch nicht alle Knoten umfasst
             while (tour.size() < NODES) {
-                int currentNode = tour.get(tour.size() - 1);
-                int nextNode = chooseNextNode(currentNode, tour);
-                tour.add(nextNode);
+                int currentNode = tour.get(tour.size() - 1); // Der aktuelle Knoten ist der zuletzt besuchte Knoten
+                int nextNode = chooseNextNode(currentNode, tour); // Wähle den nächsten Knoten basierend auf Wahrscheinlichkeiten
+                tour.add(nextNode); // Füge den gewählten Knoten zur Tour hinzu
             }
-            tour.add(tour.get(0));
-            tours.add(tour);
-            depositPheromones(tour);
+            tour.add(tour.get(0)); // Kehre zum Ausgangspunkt zurück, um die Rundreise abzuschließen
+            tours.add(tour); // Füge die vollständige Tour zur Liste der Rundreisen hinzu
+            depositPheromones(tour); // Hinterlasse Pheromone auf dem Pfad der Tour
         }
-        return tours;
+        return tours; // Gib die Liste der Rundreisen zurück
     }
+
 
     private static int chooseNextNode(int currentNode, List<Integer> tour) {
         double[] probabilities = calculateProbabilities(currentNode, tour);
@@ -126,6 +131,7 @@ public class TSPAntColony {
         double[] probabilities = new double[NODES];
         double totalProbability = 0.0;
 
+        //wahrscheinlichkeit für nächsten Node ausrechnen
         for (int nextNode = 0; nextNode < NODES; nextNode++) {
             if (!tour.contains(nextNode)) {
                 double distance = distances[currentNode][nextNode];
@@ -137,7 +143,7 @@ public class TSPAntColony {
         }
 
         if (totalProbability == 0.0) {
-            // If all probabilities are zero, distribute probabilities equally among unvisited nodes
+            //Wenn alle Wahrscheinlichkeiten null sind, werden die Wahrscheinlichkeiten gleichmäßig unter den unbesuchten Knoten verteilt.
             for (int nextNode = 0; nextNode < NODES; nextNode++) {
                 if (!tour.contains(nextNode)) {
                     probabilities[nextNode] = 1.0 / (NODES - tour.size());
@@ -151,6 +157,7 @@ public class TSPAntColony {
         return probabilities;
     }
 
+    //Knoten wählen anhand kumulierter Wahrscheinlichkeit, sobald sie einen random wert überschreitet -> wähle den Knoten
     private static int selectNextNode(double[] probabilities, List<Integer> tour) {
         double randomValue = Math.random();
         double cumulativeProbability = 0.0;
@@ -164,7 +171,7 @@ public class TSPAntColony {
             }
         }
 
-        // If no next node is selected, return a random unvisited node as a fallback
+        // Wenn kein Knoten ausgewählt wurde, random Knoten wählen
         List<Integer> unvisitedNodes = new ArrayList<>();
         for (int nextNode = 0; nextNode < NODES; nextNode++) {
             if (!tour.contains(nextNode)) {
@@ -174,6 +181,7 @@ public class TSPAntColony {
         return unvisitedNodes.get(new Random().nextInt(unvisitedNodes.size()));
     }
 
+    //Pheromon werte aktualisieren
     static void updatePheromones(List<List<Integer>> tours) {
         for (List<Integer> tour : tours) {
             int tourCost = calculateTourCost(tour);
@@ -187,6 +195,7 @@ public class TSPAntColony {
         }
     }
 
+    //Pheromon werte verdunsten lassen
     static void evaporatePheromones() {
         for (int i = 0; i < NODES; i++) {
             for (int j = 0; j < NODES; j++) {
@@ -195,6 +204,7 @@ public class TSPAntColony {
         }
     }
 
+    //Pheromone verteilen je nachdem wie gut die Tour ist
     private static void depositPheromones(List<Integer> tour) {
         int tourCost = calculateTourCost(tour);
 
@@ -206,6 +216,7 @@ public class TSPAntColony {
         }
     }
 
+    //berechne Tour kosten
     static int calculateTourCost(List<Integer> tour) {
         int totalCost = 0;
 
@@ -219,6 +230,7 @@ public class TSPAntColony {
         return totalCost;
     }
 
+    //Suche beste tour, aller gefundenen touren
     static List<Integer> findBestTour(List<List<Integer>> tours) {
         int bestTourCost = Integer.MAX_VALUE;
         List<Integer> bestTour = null;
@@ -232,6 +244,13 @@ public class TSPAntColony {
         }
         return bestTour;
     }
+
+
+
+
+    //__________________________________________________________________________________________________________________
+    //Ab hier nur noch visualisierung
+    //__________________________________________________________________________________________________________________
 
 
     private static void visualizeGraph() {
