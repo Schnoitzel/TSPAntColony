@@ -5,11 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ca560e11-4dec-428a-b8be-604916f9081c" name="Changes" comment="Nochmal besser kommentiert und aufgeräumt">
-      <change afterPath="$PROJECT_DIR$/test/tsp/solver/test/TSPAntColonyTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TSPSolver.iml" beforeDir="false" afterPath="$PROJECT_DIR$/TSPSolver.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tsp/solver/test/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tsp/solver/test/TSPAntColony.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tsp/solver/test/TSPAntColony.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/tsp/solver/test/TSPAntColonyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/tsp/solver/test/TSPAntColonyTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,9 +59,9 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
+    "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
+    "project.structure.side.proportion": "0.33103448",
     "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
     "vue.rearranger.settings.migration": "true"
   }
@@ -71,6 +69,9 @@
   <component name="RecentsManager">
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\ioannis\OneDrive - HAW-HH\Dokumente\sose4\KI\TSPSolver\libs" />
     </key>
     <key name="CreateTestDialog.RecentsKey">
       <recent name="tsp.solver.test" />
