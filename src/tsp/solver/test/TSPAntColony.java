@@ -55,8 +55,6 @@ public class TSPAntColony {
         Q = 1.0;
         ALPHA = 5.0;
 
-
-
         List<List<Integer>> tours = new ArrayList<>();
         for (int iteration = 0; iteration < 100; iteration++) {
             tours = simulateAnts();
@@ -68,13 +66,13 @@ public class TSPAntColony {
         int bestTourCost = calculateTourCost(bestTour);
 
         //visualizeBestTourInGraph(bestTour);
-        visualizeBestTour(bestTour);
+        //visualizeBestTour(bestTour);
         // printDistancesAndPheromones();
         System.out.println("Testing for Q = " + Q + ", ALPHA = " + ALPHA );
         System.out.println("Beste Tour: " + bestTour);
         System.out.println("Gesamtkosten: " + bestTourCost );
 
-        visualizeGraph();
+        //visualizeGraph();
     }
 
     //random distanzen zwischen den knoten generieren

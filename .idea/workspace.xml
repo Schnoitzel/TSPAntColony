@@ -4,9 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca560e11-4dec-428a-b8be-604916f9081c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="ca560e11-4dec-428a-b8be-604916f9081c" name="Changes" comment="Nochmal besser kommentiert und aufgeräumt">
+      <change afterPath="$PROJECT_DIR$/test/tsp/solver/test/TSPAntColonyTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TSPSolver.iml" beforeDir="false" afterPath="$PROJECT_DIR$/TSPSolver.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tsp/solver/test/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tsp/solver/test/TSPAntColony.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tsp/solver/test/TSPAntColony.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,18 +20,22 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="JUnit5 Test Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/tsp/solver/test/Main.java" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 0
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="2gh2rw7v8okpS97l61GW0qgZ8Gy" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -37,11 +44,18 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Downloaded.Files.Path.Enabled": "false",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "git-widget-placeholder": "master",
+    "jdk.selected.JAVA_MODULE": "openjdk-20",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -50,23 +64,19 @@
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Application.Main">
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="tsp.solver.test.Main" />
-      <module name="TSPSolver" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="tsp.solver.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RecentsManager">
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="tsp.solver.test" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.TSPAntColony">
     <configuration name="TSPAntColony" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="tsp.solver.test.TSPAntColony" />
       <module name="TSPSolver" />
@@ -80,10 +90,76 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="TSPAntColonyTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TSPSolver" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tsp.solver.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tsp.solver.test" />
+      <option name="MAIN_CLASS_NAME" value="tsp.solver.test.TSPAntColonyTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TSPAntColonyTest.testAlgorithmFunctionality" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TSPSolver" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tsp.solver.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tsp.solver.test" />
+      <option name="MAIN_CLASS_NAME" value="tsp.solver.test.TSPAntColonyTest" />
+      <option name="METHOD_NAME" value="testAlgorithmFunctionality" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TSPAntColonyTest.testParameterTuning" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TSPSolver" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tsp.solver.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tsp.solver.test" />
+      <option name="MAIN_CLASS_NAME" value="tsp.solver.test.TSPAntColonyTest" />
+      <option name="METHOD_NAME" value="testParameterTuning" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TSPAntColonyTest.testTourCalculation" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TSPSolver" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tsp.solver.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tsp.solver.test" />
+      <option name="MAIN_CLASS_NAME" value="tsp.solver.test.TSPAntColonyTest" />
+      <option name="METHOD_NAME" value="testTourCalculation" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Main" />
         <item itemvalue="Application.TSPAntColony" />
+        <item itemvalue="JUnit.TSPAntColonyTest" />
+        <item itemvalue="JUnit.TSPAntColonyTest.testAlgorithmFunctionality" />
+        <item itemvalue="JUnit.TSPAntColonyTest.testParameterTuning" />
+        <item itemvalue="JUnit.TSPAntColonyTest.testTourCalculation" />
       </list>
     </recent_temporary>
   </component>
@@ -97,8 +173,35 @@
       <updated>1716135693163</updated>
       <workItem from="1716135694456" duration="17672000" />
       <workItem from="1716285078552" duration="4761000" />
-      <workItem from="1716310923495" duration="1986000" />
+      <workItem from="1716310923495" duration="6000000" />
+      <workItem from="1716380508152" duration="1245000" />
+      <workItem from="1716463958882" duration="12853000" />
     </task>
+    <task id="LOCAL-00001" summary="dopplungen gelöscht und anzeige aktualisiert">
+      <option name="closed" value="true" />
+      <created>1716481025748</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1716481025748</updated>
+    </task>
+    <task id="LOCAL-00002" summary="experimente mit verschiednene Q und Alpha hinzugefügt">
+      <option name="closed" value="true" />
+      <created>1716482352476</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1716482352476</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Nochmal besser kommentiert und aufgeräumt">
+      <option name="closed" value="true" />
+      <created>1716487387208</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1716487387208</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -114,5 +217,21 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="dopplungen gelöscht und anzeige aktualisiert" />
+    <MESSAGE value="experimente mit verschiednene Q und Alpha hinzugefügt" />
+    <MESSAGE value="Nochmal besser kommentiert und aufgeräumt" />
+    <option name="LAST_COMMIT_MESSAGE" value="Nochmal besser kommentiert und aufgeräumt" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.ArrayIndexOutOfBoundsException" package="java.lang" />
+          <option name="timeStamp" value="2" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
