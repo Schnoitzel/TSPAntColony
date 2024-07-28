@@ -1,85 +1,87 @@
 package tsp.solver.test;
 
 import java.util.*;
-
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 
-import org.graphstream.algorithm.Dijkstra;
-
-
 public class TSPAntColony {
+    private int nodes;
+    private double initialPheromone;
+    private double evaporationRate;
+    private double q;
+    private double alpha;
 
-    private static final int NODES = 50;
-    private static final double INITIAL_PHEROMONE = 1.0;
-    private static final double EVAPORATION_RATE = 0.5;
-    static double Q = 1.0;
-    static double ALPHA = 1.0;
+    private double[][] distances;
+    private double[][] pheromones;
 
-    private static double[][] distances = new double[NODES][NODES];
-    private static double[][] pheromones = new double[NODES][NODES];
 
-    public static void main(String[] args) {
-        double[] QValues = {1, 10};
-        double[] ALPHAValues = {1, 10};
-        initializeDistances();
-        initializePheromones();
+    public TSPAntColony(int nodes, double initialPheromone, double evaporationRate, double q, double alpha) {
+        this.nodes = nodes;
+        this.initialPheromone = initialPheromone;
+        this.evaporationRate = evaporationRate;
+        this.q = q;
+        this.alpha = alpha;
 
-        //mehrere ausführungen mit unterschiedlichen Q und Alpha werten
-        for (double Qs : QValues) {
-            for (double ALPHAs : ALPHAValues) {
-                Q = Qs;
-                ALPHA= ALPHAs;
-                System.out.println("Testing for Q = " + Q + ", ALPHA = " + ALPHA );
-
-                List<List<Integer>> tours = new ArrayList<>();
-                for (int iteration = 0; iteration < 100; iteration++) {
-                    tours = simulateAnts();
-                    updatePheromones(tours);
-                    evaporatePheromones();
-                }
-
-                List<Integer> bestTour = findBestTour(tours);
-                int bestTourCost = calculateTourCost(bestTour);
-                System.out.println("Beste Tour: " + bestTour);
-                System.out.println("Gesamtkosten: " + bestTourCost + "\n");
-
-                //visualizeBestTourInGraph(bestTour);
-                //visualizeBestTour(bestTour);
-                // printDistancesAndPheromones();
-            }}
-
-        //setzen der werte für einzelne ausführung
-        Q = 1.0;
-        ALPHA = 5.0;
-
-        List<List<Integer>> tours = new ArrayList<>();
-        for (int iteration = 0; iteration < 100; iteration++) {
-            tours = simulateAnts();
-            updatePheromones(tours);
-            evaporatePheromones();
-        }
-
-        List<Integer> bestTour = findBestTour(tours);
-        int bestTourCost = calculateTourCost(bestTour);
-
-        //visualizeBestTourInGraph(bestTour);
-        //visualizeBestTour(bestTour);
-        // printDistancesAndPheromones();
-        System.out.println("Testing for Q = " + Q + ", ALPHA = " + ALPHA );
-        System.out.println("Beste Tour: " + bestTour);
-        System.out.println("Gesamtkosten: " + bestTourCost );
-
-        //visualizeGraph();
+        this.distances = new double[nodes][nodes];
+        this.pheromones = new double[nodes][nodes];
     }
 
-    //random distanzen zwischen den knoten generieren
-    static void initializeDistances() {
+    public static void main(String[] args) {
+        double[] qValues = {1, 10.0, 100};
+        double[] alphaValues = {1, 10.0, 100};
+
+        TSPAntColony tsp = new TSPAntColony(100, 1.0, 0.5, 1.0, 1.0);
+        tsp.initializeDistancesWr();
+        tsp.initializePheromones();
+
+        for (double q : qValues) {
+            for (double alpha : alphaValues) {
+                tsp.q = q;
+                tsp.alpha = alpha;
+                System.out.println("Testing for Q = " + q + ", ALPHA = " + alpha);
+
+                long totalDuration = 0;
+                int totalBestTourCost = 0;
+
+                for (int run = 0; run < 100; run++) {
+                    List<List<Integer>> tours = new ArrayList<>();
+                    tsp.initializePheromones(); // Reset Pheromones for each run
+
+                    long startTime = System.nanoTime(); // Startzeit
+                    for (int iteration = 0; iteration < 100; iteration++) {
+                        tours = tsp.simulateAnts();
+                        tsp.updatePheromones(tours);
+                        tsp.evaporatePheromones();
+                    }
+                    long endTime = System.nanoTime(); // Endzeit
+                    long duration = (endTime - startTime) / 1_000_000; // Dauer in Millisekunden
+
+                    List<Integer> bestTour = tsp.findBestTour(tours);
+                    int bestTourCost = tsp.calculateTourCost(bestTour);
+
+                    totalDuration += duration;
+                    totalBestTourCost += bestTourCost;
+                }
+
+                long averageDuration = totalDuration / 100;
+                int averageBestTourCost = totalBestTourCost / 100;
+
+                System.out.println("Durchschnittliche beste Tour Kosten: " + averageBestTourCost);
+                System.out.println("Durchschnittliche Dauer: " + averageDuration + " ms\n");
+            }
+        }
+
+        // tsp.visualizeGraph();
+    }
+
+
+    // Random distanzen zwischen den knoten generieren
+    public void initializeDistancesWr() {
         Random random = new Random();
-        for (int i = 0; i < NODES; i++) {
-            for (int j = 0; j < NODES; j++) {
+        for (int i = 0; i < nodes; i++) {
+            for (int j = 0; j < nodes; j++) {
                 if (i == j) {
                     distances[i][j] = 0;
                 } else {
@@ -90,61 +92,68 @@ public class TSPAntColony {
         }
     }
 
-    //anfängliche Pheromon werte initialisieren
-    static void initializePheromones() {
-        for (int i = 0; i < NODES; i++) {
-            Arrays.fill(pheromones[i], INITIAL_PHEROMONE);
+    // Anfängliche Pheromon Werte initialisieren
+    public void initializePheromones() {
+        for (int i = 0; i < nodes; i++) {
+            Arrays.fill(pheromones[i], initialPheromone);
         }
     }
 
-    //Ameisen simulieren.
-    static List<List<Integer>> simulateAnts() {
+    // Ameisen simulieren
+    public List<List<Integer>> simulateAnts() {
         List<List<Integer>> tours = new ArrayList<>();
 
-        // Für jede Ameise (jede Ameise startet von einem anderen Knoten)
-        for (int ant = 0; ant < NODES; ant++) {
+        // Für jede Ameise
+        for (int ant = 0; ant < nodes; ant++) {
             List<Integer> tour = new ArrayList<>();
-            tour.add(ant); // Die Ameise beginnt ihre Tour an Knoten 'ant'
+            tour.add(ant); //Ameise Startknoten zuweisen
 
             // Solange die Tour noch nicht alle Knoten umfasst
-            while (tour.size() < NODES) {
+            while (tour.size() < nodes) {
                 int currentNode = tour.get(tour.size() - 1); // Der aktuelle Knoten ist der zuletzt besuchte Knoten
                 int nextNode = chooseNextNode(currentNode, tour); // Wähle den nächsten Knoten basierend auf Wahrscheinlichkeiten
                 tour.add(nextNode); // Füge den gewählten Knoten zur Tour hinzu
             }
             tour.add(tour.get(0)); // Kehre zum Ausgangspunkt zurück, um die Rundreise abzuschließen
             tours.add(tour); // Füge die vollständige Tour zur Liste der Rundreisen hinzu
-            depositPheromones(tour); // Hinterlasse Pheromone auf dem Pfad der Tour
+            depositPheromones(tour); // Hinterlasse Pheromone auf der aktuellen Tour
         }
-        return tours; // Gib die Liste der Rundreisen zurück
+        return tours; // Gib die Liste aller Rundreisen zurück
     }
 
-
-    private static int chooseNextNode(int currentNode, List<Integer> tour) {
+    //Wählt nächsten Knoten
+    private int chooseNextNode(int currentNode, List<Integer> tour) {
         double[] probabilities = calculateProbabilities(currentNode, tour);
         return selectNextNode(probabilities, tour);
     }
 
-    private static double[] calculateProbabilities(int currentNode, List<Integer> tour) {
-        double[] probabilities = new double[NODES];
+    //Berechnet Wahrscheinlichkeiten für nächsten Knoten
+    public double[] calculateProbabilities(int currentNode, List<Integer> tour) {
+        double[] probabilities = new double[nodes];
         double totalProbability = 0.0;
 
-        //wahrscheinlichkeit für nächsten Node ausrechnen
-        for (int nextNode = 0; nextNode < NODES; nextNode++) {
+        //Überprüft ob Distanzen und Pheromone korrekt initialisiert wurden.
+        if (distances == null || pheromones == null || distances.length != nodes || pheromones.length != nodes ||
+                distances[0].length != nodes || pheromones[0].length != nodes) {
+            throw new IllegalStateException("Distances and pheromones are not properly initialized.");
+        }
+
+        //wahrscheinlichkeit für alle nächsten Nodes ausrechnen
+        for (int nextNode = 0; nextNode < nodes; nextNode++) {
             if (!tour.contains(nextNode)) {
                 double distance = distances[currentNode][nextNode];
                 double pheromone = pheromones[currentNode][nextNode];
-
-                probabilities[nextNode] = Math.pow(pheromone, Q) / Math.pow(distance, ALPHA);
-                totalProbability += probabilities[nextNode];
+                if (distance != 0) {
+                    probabilities[nextNode] = Math.pow(pheromone, q) / Math.pow(distance, alpha);  //Kurze wege mit hohen Pheromon Wert, bekommen hohe Wahrscheinlichkeit
+                    totalProbability += probabilities[nextNode];
+                }
             }
         }
-
+        //Wenn alle Wahrscheinlichkeiten null sind, werden die Wahrscheinlichkeiten gleichmäßig unter den unbesuchten Knoten verteilt.
         if (totalProbability == 0.0) {
-            //Wenn alle Wahrscheinlichkeiten null sind, werden die Wahrscheinlichkeiten gleichmäßig unter den unbesuchten Knoten verteilt.
-            for (int nextNode = 0; nextNode < NODES; nextNode++) {
+            for (int nextNode = 0; nextNode < nodes; nextNode++) {
                 if (!tour.contains(nextNode)) {
-                    probabilities[nextNode] = 1.0 / (NODES - tour.size());
+                    probabilities[nextNode] = 1.0 / (nodes - tour.size());
                 }
             }
         } else {
@@ -156,14 +165,14 @@ public class TSPAntColony {
     }
 
     //Knoten wählen anhand kumulierter Wahrscheinlichkeit, sobald sie einen random wert überschreitet -> wähle den Knoten
-    private static int selectNextNode(double[] probabilities, List<Integer> tour) {
+    public int selectNextNode(double[] probabilities, List<Integer> tour) {
         double randomValue = Math.random();
         double cumulativeProbability = 0.0;
 
-        for (int nextNode = 0; nextNode < NODES; nextNode++) {
+        for (int nextNode = 0; nextNode < nodes; nextNode++) {
             if (!tour.contains(nextNode)) {
                 cumulativeProbability += probabilities[nextNode];
-                if (cumulativeProbability >= randomValue) {
+                if (cumulativeProbability >= randomValue) {  //zur Vermeidung lokaler Optima
                     return nextNode;
                 }
             }
@@ -171,7 +180,7 @@ public class TSPAntColony {
 
         // Wenn kein Knoten ausgewählt wurde, random Knoten wählen
         List<Integer> unvisitedNodes = new ArrayList<>();
-        for (int nextNode = 0; nextNode < NODES; nextNode++) {
+        for (int nextNode = 0; nextNode < nodes; nextNode++) {
             if (!tour.contains(nextNode)) {
                 unvisitedNodes.add(nextNode);
             }
@@ -179,8 +188,8 @@ public class TSPAntColony {
         return unvisitedNodes.get(new Random().nextInt(unvisitedNodes.size()));
     }
 
-    //Pheromon werte aktualisieren
-    static void updatePheromones(List<List<Integer>> tours) {
+    //Pheromon Werte aktualisieren, für alle touren nach einer Iteration
+    public void updatePheromones(List<List<Integer>> tours) {
         for (List<Integer> tour : tours) {
             int tourCost = calculateTourCost(tour);
 
@@ -193,17 +202,8 @@ public class TSPAntColony {
         }
     }
 
-    //Pheromon werte verdunsten lassen
-    static void evaporatePheromones() {
-        for (int i = 0; i < NODES; i++) {
-            for (int j = 0; j < NODES; j++) {
-                pheromones[i][j] *= (1 - EVAPORATION_RATE);
-            }
-        }
-    }
-
-    //Pheromone verteilen je nachdem wie gut die Tour ist
-    private static void depositPheromones(List<Integer> tour) {
+    //Pheromone Werte aktualisieren, für eine einzige tour
+    private void depositPheromones(List<Integer> tour) {
         int tourCost = calculateTourCost(tour);
 
         for (int i = 0; i < tour.size() - 1; i++) {
@@ -214,8 +214,17 @@ public class TSPAntColony {
         }
     }
 
-    //berechne Tour kosten
-    static int calculateTourCost(List<Integer> tour) {
+    //Pheromon Werte verdunsten lassen
+    public void evaporatePheromones() {
+        for (int i = 0; i < nodes; i++) {
+            for (int j = 0; j < nodes; j++) {
+                pheromones[i][j] *= (1 - evaporationRate);
+            }
+        }
+    }
+
+    //berechnet die Gesamtkosten einer Tour
+    public int calculateTourCost(List<Integer> tour) {
         int totalCost = 0;
 
         for (int i = 0; i < tour.size() - 1; i++) {
@@ -228,8 +237,8 @@ public class TSPAntColony {
         return totalCost;
     }
 
-    //Suche beste tour, aller gefundenen touren
-    static List<Integer> findBestTour(List<List<Integer>> tours) {
+    //Sucht die beste Tour aus einer Liste von Touren
+    public List<Integer> findBestTour(List<List<Integer>> tours) {
         int bestTourCost = Integer.MAX_VALUE;
         List<Integer> bestTour = null;
 
@@ -240,9 +249,9 @@ public class TSPAntColony {
                 bestTour = tour;
             }
         }
+
         return bestTour;
     }
-
 
 
 
@@ -251,21 +260,20 @@ public class TSPAntColony {
     //__________________________________________________________________________________________________________________
 
 
-    private static void visualizeGraph() {
+
+    private void visualizeGraph() {
         System.setProperty("org.graphstream.ui", "swing");
 
         Graph graph = new SingleGraph("Graph");
 
-        // Knoten hinzufügen
-        for (int i = 0; i < NODES; i++) {
+        for (int i = 0; i < nodes; i++) {
             Node node = graph.addNode(String.valueOf(i));
             node.setAttribute("ui.label", node.getId());
         }
 
-        // Kanten hinzufügen
-        for (int i = 0; i < NODES; i++) {
-            for (int j = 0; j < NODES; j++) {
-                if (i != j && distances[i][j] > 0) { // Keine Schleifen und nur positive Distanzen
+        for (int i = 0; i < nodes; i++) {
+            for (int j = 0; j < nodes; j++) {
+                if (i != j && distances[i][j] > 0) {
                     String edgeId = i + "-" + j;
                     Edge edge = graph.addEdge(edgeId, String.valueOf(i), String.valueOf(j), true);
                     edge.setAttribute("ui.label", String.format("%.2f", distances[i][j]));
@@ -273,29 +281,23 @@ public class TSPAntColony {
             }
         }
 
-        // Styling für den Graphen
         graph.setAttribute("ui.stylesheet",
                 "node { text-size: 20px; text-color: black; fill-color: red; }" +
                         "edge { text-size: 15px; text-color: blue; }"
         );
-        // Graph anzeigen
         graph.display();
     }
 
-
-
-    private static void visualizeBestTour(List<Integer> bestTour) {
+    private void visualizeBestTour(List<Integer> bestTour) {
         System.setProperty("org.graphstream.ui", "swing");
 
         Graph graph = new SingleGraph("BestTourGraph");
 
-        // Knoten hinzufügen
-        for (int i = 0; i < NODES; i++) {
+        for (int i = 0; i < nodes; i++) {
             Node node = graph.addNode(String.valueOf(i));
             node.setAttribute("ui.label", node.getId());
         }
 
-        // Kanten des besten Rundreisewegs hinzufügen
         for (int i = 0; i < bestTour.size() - 1; i++) {
             int source = bestTour.get(i);
             int target = bestTour.get(i + 1);
@@ -304,30 +306,26 @@ public class TSPAntColony {
             edge.setAttribute("ui.label", String.format("%.2f", distances[source][target]));
         }
 
-        // Styling für den Graphen
         graph.setAttribute("ui.stylesheet",
                 "node { text-size: 20px; text-color: black; fill-color: red; }" +
                         "edge { text-size: 15px; text-color: blue; }"
         );
 
-        // Graph anzeigen
         graph.display();
     }
 
-    private static void visualizeBestTourInGraph(List<Integer> bestTour) {
+    private void visualizeBestTourInGraph(List<Integer> bestTour) {
         System.setProperty("org.graphstream.ui", "swing");
 
         Graph graph = new SingleGraph("Graph");
 
-        // Knoten hinzufügen
-        for (int i = 0; i < NODES; i++) {
+        for (int i = 0; i < nodes; i++) {
             graph.addNode(String.valueOf(i));
         }
 
-        // Kanten hinzufügen
-        for (int i = 0; i < NODES; i++) {
-            for (int j = 0; j < NODES; j++) {
-                if (i != j && distances[i][j] > 0) { // Keine Schleifen und nur positive Distanzen
+        for (int i = 0; i < nodes; i++) {
+            for (int j = 0; j < nodes; j++) {
+                if (i != j && distances[i][j] > 0) {
                     String edgeId = i + "-" + j;
                     Edge edge = graph.addEdge(edgeId, String.valueOf(i), String.valueOf(j), true);
                     edge.setAttribute("weight", distances[i][j]);
@@ -335,7 +333,6 @@ public class TSPAntColony {
             }
         }
 
-        // Kanten der besten Rundreisewegs markieren
         for (int i = 0; i < bestTour.size() - 1; i++) {
             int source = bestTour.get(i);
             int target = bestTour.get(i + 1);
@@ -345,38 +342,60 @@ public class TSPAntColony {
             edge.setAttribute("ui.label", String.format("%.2f", edge.getAttribute("weight")));
         }
 
-
-
-        // Styling für den Graphen
         graph.setAttribute("ui.stylesheet",
                 "node { text-size: 20px; text-color: black; fill-color: red; }" +
                         "edge { text-size: 15px; text-color: blue; }"
         );
 
-        // Labels anzeigen
         for (Node node : graph) {
             node.setAttribute("ui.label", node.getId());
         }
 
-        // Graph anzeigen
         graph.display();
     }
 
-
-    private static void printDistancesAndPheromones() {
-        for (int i = 0; i < NODES; i++) {
-            for (int j = 0; j < NODES; j++) {
-                System.out.printf("%8.2f", distances[i][j]); // Formatiere die Ausgabe auf zwei Dezimalstellen
+    public void printDistancesAndPheromones() {
+        for (int i = 0; i < nodes; i++) {
+            for (int j = 0; j < nodes; j++) {
+                System.out.printf("%8.2f", distances[i][j]);
             }
-            System.out.println(); // Neue Zeile am Ende jeder Zeile des Arrays
+            System.out.println();
         }
         System.out.println();
-        for (int i = 0; i < NODES; i++) {
-            for (int j = 0; j < NODES; j++) {
-                System.out.printf("%8.2f", pheromones[i][j]); // Formatiere die Ausgabe auf zwei Dezimalstellen
+        for (int i = 0; i < nodes; i++) {
+            for (int j = 0; j < nodes; j++) {
+                System.out.printf("%8.2f", pheromones[i][j]);
             }
-            System.out.println(); // Neue Zeile am Ende jeder Zeile des Arrays
+            System.out.println();
         }
+    }
 
+    public double[][] getDistances() {
+        return distances;
+    }
+
+    public int getNodes() {
+        return nodes;
+    }
+
+    public double[][] getPheromones() {
+        return pheromones;
+    }
+
+    public void setDistances(double[][] distances) {
+        this.distances = distances;
+    }
+
+    public void initializeDistances(double random) {
+        for (int i = 0; i < nodes; i++) {
+            for (int j = 0; j < nodes; j++) {
+                if (i == j) {
+                    distances[i][j] = 0;
+                } else {
+                    distances[i][j] = 10 + random * 90;
+                    distances[j][i] = distances[i][j];
+                }
+            }
+        }
     }
 }
